@@ -9,6 +9,9 @@ const config = {
     paths: {
       base: process.argv.includes("dev") ? "" : `/${"ShaderRender"}`,
     },
+    serviceWorker: {
+      register: false,
+    },
   },
 };
 
