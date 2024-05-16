@@ -7,8 +7,10 @@
       
   let scene, camera, renderer, mesh;
   let uniforms = {
-    time: { value: 0 }
+    time: { value: 0 },
+    resolution: { value: new THREE.Vector2(window.innerWidth,window.innerHeight)}
   };
+  const startTime = Date.now();
   let vertexShader = `
       void main() {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -19,21 +21,10 @@
     camera = new THREE.OrthographicCamera(-1,1,1,-1,-1,1);
     renderer = new THREE.WebGLRenderer({ antialias: true });
 
-    renderer.setSize(600,400);
+    renderer.setSize(window.innerWidth,window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
     const geometry = new THREE.PlaneGeometry(2,2);
-    shaderCode = `uniform float time;
-    void main() {
-        // 時間に基づいて色を計算
-        vec3 color = vec3(
-            0.5 + 0.5 * sin(time),
-            0.5 + 0.5 * cos(time),
-            0.5 + 0.5 * tan(time)
-        );
-
-        gl_FragColor = vec4(color, 1.0);
-    }`
     mesh = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
       vertexShader: vertexShader, // Vertex Shader
       fragmentShader: shaderCode, // Fragment Shader
@@ -45,7 +36,9 @@
     const animate = () => {
       requestAnimationFrame(animate);
       
-      uniforms.time.value += 0.01;
+      // 経過時間を計算
+      const elapsedTime = (Date.now() - startTime) / 1000; // ミリ秒単位から秒単位に変換
+      uniforms.time.value = elapsedTime;
       mesh.material.uniforms.time.value = uniforms.time.value;
       mesh.material = new THREE.ShaderMaterial({
         vertexShader: vertexShader, // Vertex Shader
@@ -56,7 +49,7 @@
     };
     animate();
   });
-
+  
   onDestroy(() => {
     renderer.dispose();
   });

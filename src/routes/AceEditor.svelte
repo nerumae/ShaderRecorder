@@ -8,12 +8,14 @@
   let editorContainer;
   let shaderCode = `
     uniform float time;
+    uniform vec2 resolution;
     void main() {
         // 時間に基づいて色を計算
+        vec2 r=resolution,p=(gl_FragCoord.xy*2.-r)/min(r.x,r.y);
         vec3 color = vec3(
-            0.5 + 0.5 * sin(time),
-            0.5 + 0.5 * cos(time),
-            0.5 + 0.5 * tan(time)
+            p.x + 0.5 * sin(time),
+            p.y + 0.5 * cos(time),
+            1.
         );
 
         gl_FragColor = vec4(color, 1.0);
@@ -35,11 +37,14 @@
     });
 
     editor.resize();
+    dispatch('change',{
+      text: shaderCode
+    });
   });
 </script>
 
 <div class="ace" bind:this={editorContainer}></div>
-
+<!-- todo:一定時間入力がなかったらイベント起こすようにする -->
 <style>
  .ace {
     position: relative!important;
@@ -47,5 +52,6 @@
     margin: auto;
     height: 400px;
     width: 100%;
+    background-color: rgba(255,255,255,0.5);
   }
 </style>
