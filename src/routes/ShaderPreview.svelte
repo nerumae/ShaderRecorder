@@ -5,7 +5,10 @@
   export let shaderCode = ``;
     
       
-  let scene, camera, renderer, mesh;
+  let scene : THREE.Scene;
+  let camera : THREE.Camera;
+  let renderer : THREE.WebGLRenderer;
+  let mesh : THREE.Mesh;
   let uniforms = {
     time: { value: 0 },
     resolution: { value: new THREE.Vector2(window.innerWidth,window.innerHeight)}
@@ -25,11 +28,12 @@
     document.body.appendChild(renderer.domElement);
 
     const geometry = new THREE.PlaneGeometry(2,2);
-    mesh = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       vertexShader: vertexShader, // Vertex Shader
       fragmentShader: shaderCode, // Fragment Shader
       uniforms: uniforms
-    }));
+    });
+    mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
 
