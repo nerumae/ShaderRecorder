@@ -1,9 +1,9 @@
-import { writable } from "svelte/store";
+import { writable, readable } from "svelte/store";
 export const vertexShader = `
       void main() {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }`;
-export let fragmentShader = `
+export let fragmentShader = writable(`
     uniform float time;
     uniform vec2 resolution;
     void main() {
@@ -17,4 +17,4 @@ export let fragmentShader = `
 
         gl_FragColor = vec4(color, 1.0);
     }
-  `;
+  `);

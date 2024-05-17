@@ -4,23 +4,9 @@
   import "brace/mode/glsl";
   import "brace/theme/chrome";
   import { createEventDispatcher } from 'svelte';
+  import { fragmentShader } from "$lib/shaders";
 
   let editorContainer;
-  let shaderCode = `
-    uniform float time;
-    uniform vec2 resolution;
-    void main() {
-        // 時間に基づいて色を計算
-        vec2 r=resolution,p=(gl_FragCoord.xy*2.-r)/min(r.x,r.y);
-        vec3 color = vec3(
-            p.x + 0.5 * sin(time),
-            p.y + 0.5 * cos(time),
-            1.
-        );
-
-        gl_FragColor = vec4(color, 1.0);
-    }
-  `;
 
   const dispatch = createEventDispatcher();
 
@@ -28,17 +14,14 @@
     const editor = ace.edit(editorContainer);
     editor.setTheme("ace/theme/chrome");
     editor.session.setMode("ace/mode/glsl");
-    editor.setValue(shaderCode);
+    editor.setValue($fragmentShader);
     editor.session.on('change', () => {
-      shaderCode = editor.getValue();
-      dispatch('change', {
-        text: shaderCode
-      }); // イベントを発火させます
+      fragmentShader.set(editor.getValue());
     });
 
     editor.resize();
     dispatch('change',{
-      text: shaderCode
+      text: $fragmentShader
     });
   });
 </script>

@@ -2,7 +2,7 @@
   import * as THREE from 'three';
   import { onMount, onDestroy } from 'svelte';
   import { uniforms } from '$lib/uniforms';
-  export let shaderCode = ``;
+  import { vertexShader , fragmentShader } from '$lib/shaders';
     
       
   let scene;
@@ -10,11 +10,6 @@
   let renderer;
   let mesh;
   const startTime = Date.now();
-  let vertexShader = `
-      void main() {
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }`
-    ;
   onMount(() => {
     scene = new THREE.Scene();
     camera = new THREE.OrthographicCamera(-1,1,1,-1,-1,1);
@@ -26,7 +21,7 @@
     const geometry = new THREE.PlaneGeometry(2,2);
     const material = new THREE.ShaderMaterial({
       vertexShader: vertexShader, // Vertex Shader
-      fragmentShader: shaderCode, // Fragment Shader
+      fragmentShader: $fragmentShader, // Fragment Shader
       uniforms: uniforms
     });
     mesh = new THREE.Mesh(geometry, material);
@@ -44,7 +39,7 @@
       });
       mesh.material = new THREE.ShaderMaterial({
         vertexShader: vertexShader, // Vertex Shader
-        fragmentShader: shaderCode, // Fragment Shader
+        fragmentShader: $fragmentShader, // Fragment Shader
         uniforms: $uniforms
       })
       renderer.render(scene, camera);
