@@ -1,18 +1,14 @@
-<script lang="ts">
+<script>
   import * as THREE from 'three';
   import { onMount, onDestroy } from 'svelte';
-
+  import { uniforms } from '$lib/uniforms';
   export let shaderCode = ``;
     
       
-  let scene : THREE.Scene;
-  let camera : THREE.Camera;
-  let renderer : THREE.WebGLRenderer;
-  let mesh : THREE.Mesh;
-  let uniforms = {
-    time: { value: 0 },
-    resolution: { value: new THREE.Vector2(window.innerWidth,window.innerHeight)}
-  };
+  let scene;
+  let camera;
+  let renderer;
+  let mesh;
   const startTime = Date.now();
   let vertexShader = `
       void main() {
@@ -42,12 +38,14 @@
       
       // 経過時間を計算
       const elapsedTime = (Date.now() - startTime) / 1000; // ミリ秒単位から秒単位に変換
-      uniforms.time.value = elapsedTime;
-      mesh.material.uniforms.time.value = uniforms.time.value;
+      uniforms.update(value => {
+        value.time.value = elapsedTime;
+        return value;
+      });
       mesh.material = new THREE.ShaderMaterial({
         vertexShader: vertexShader, // Vertex Shader
         fragmentShader: shaderCode, // Fragment Shader
-        uniforms: uniforms
+        uniforms: $uniforms
       })
       renderer.render(scene, camera);
     };

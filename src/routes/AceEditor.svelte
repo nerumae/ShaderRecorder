@@ -44,6 +44,7 @@
 </script>
 
 <div class="ace" bind:this={editorContainer}></div>
+
 <!-- todo:一定時間入力がなかったらイベント起こすようにする -->
 <style>
  .ace {
